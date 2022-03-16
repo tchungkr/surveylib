@@ -32,6 +32,8 @@ public class SurveyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_survey);
 
+
+
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
             mSurveyPojo = new Gson().fromJson(bundle.getString("json_survey"), SurveyPojo.class);

@@ -1,5 +1,8 @@
 package com.androidadvance.surveylib;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,7 +17,18 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SURVEY_REQUEST = 1337;
+    //private static final int SURVEY_REQUEST = 1337;
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+             if(result.getResultCode() == RESULT_OK) {
+                 Intent intent = result.getData();
+                 String answers_json = intent.getExtras().getString("answers");
+                 Log.d("***", "******** WE HAVE ANS******");
+                 Log.v("ANS JSON", answers_json);
+             }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Nothing fancy here. Plain old simple buttons....
+
+        Log.d("***","**** start ***");
 
         Button button_survey_example_1 = (Button) findViewById(R.id.button_survey_example_1);
         Button button_survey_example_2 = (Button) findViewById(R.id.button_survey_example_2);
@@ -34,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent i_survey = new Intent(MainActivity.this, SurveyActivity.class);
                 //you have to pass as an extra the json string.
                 i_survey.putExtra("json_survey", loadSurveyJson("example_survey_1.json"));
-                startActivityForResult(i_survey, SURVEY_REQUEST);
+                //startActivityForResult(i_survey, SURVEY_REQUEST);
+                mStartForResult.launch(i_survey);
             }
         });
 
@@ -43,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i_survey = new Intent(MainActivity.this, SurveyActivity.class);
                 i_survey.putExtra("json_survey", loadSurveyJson("example_survey_2.json"));
-                startActivityForResult(i_survey, SURVEY_REQUEST);
+                //startActivityForResult(i_survey, SURVEY_REQUEST);
+                mStartForResult.launch(i_survey);
             }
         });
 
@@ -52,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i_survey = new Intent(MainActivity.this, SurveyActivity.class);
                 i_survey.putExtra("json_survey", loadSurveyJson("example_survey_3.json"));
-                startActivityForResult(i_survey, SURVEY_REQUEST);
+                //startActivityForResult(i_survey, SURVEY_REQUEST);
+                mStartForResult.launch(i_survey);
             }
         });
 
     }
 
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SURVEY_REQUEST) {
@@ -73,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+*/
 
     //json stored in the assets folder. but you can get it from wherever you like.
     private String loadSurveyJson(String filename) {
